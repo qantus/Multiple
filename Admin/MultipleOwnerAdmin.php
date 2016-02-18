@@ -7,7 +7,6 @@
  */
 namespace Modules\Multiple\Admin;
 
-use Mindy\Orm\Base;
 use Mindy\Utils\RenderTrait;
 use Modules\Admin\Components\ModelAdmin;
 
@@ -34,20 +33,10 @@ abstract class MultipleOwnerAdmin extends ModelAdmin
             foreach ($this->getMultiple() as $name => $admin) {
                 $class = $admin['class'];
 
-                $foreignField = isset($admin['foreignField']) ? $admin['foreignField'] : $model->normalizeTableName($model->classNameShort());
-
-                $filter = [];
-                $primaryKey = null;
-                if ($owner && $owner->pk) {
-                    $primaryKey = $owner->pk;
-                    $filter = [$foreignField => $primaryKey];
-                }
-
                 $admin = new $class([
                     'moduleName' => $this->getModule()->getId(),
-                    'filter' => $filter,
                     'ownerModel' => $owner,
-                    'ownerField' => $name
+                    'multipleField' => $name
                 ]);
 
                 $params = isset($_POST['search']) ? array_merge([

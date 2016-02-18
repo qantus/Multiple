@@ -9,14 +9,33 @@
 
 В нашем модуле есть 2 модели: Item и Color. Одна модель Item может иметь несколько связанных моделей Color, и одна модель Color имеет только один связанный Item (типичный случай HasMany).
 
-В форме вывода в админке Item укажем:
+ItemAdmin:
 
 ```php
-  'colors' => [
-      'class' => MultipleField::className(),
-      'adminClass' => ColorAdmin::className()
-  ]
+class ItemAdmin extends MultipleOwnerAdmin
+{
+    public function getColumns()
+    {
+        return ['name'];
+    }
+
+    public function getModel()
+    {
+        return new Color;
+    }
+
+    public function getMultiple()
+    {
+        return [
+            'colors' => [
+                'class' => ColorAdmin::className()
+            ]
+        ];
+    }
+}
 ```
+
+В методе **getMultiple** ключом возвращаемого массива должно быть название поля, используемого в модели (в нашем случае *colors*)
 
 Собственно, сам ColorAdmin:
 

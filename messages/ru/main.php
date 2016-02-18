@@ -1,5 +1,6 @@
 <?php
 
 return array (
-  'Data success saved' => '',
+    'Data is saved successfully' => 'Данные успешно сохранены',
+    'For add data, please save model' => 'Для редактирования данных сохраните объект'
 );

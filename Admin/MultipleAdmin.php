@@ -31,9 +31,18 @@ abstract class MultipleAdmin extends ModelAdmin
 
     public $adminTableClassName = 'Modules\Multiple\Tables\MultipleAdminTable';
 
-    public $filter = [];
+    public $filter;
 
+    /**
+     * @var string Foreign field in multiple model
+     */
     public $ownerField;
+
+    /**
+     * @var string Has many field in owner model
+     */
+    public $multipleField;
+
     public $ownerModel;
 
     public $showPkColumn = false;
@@ -44,7 +53,21 @@ abstract class MultipleAdmin extends ModelAdmin
      */
     public function getQuerySet(Model $model)
     {
-        return $model->objects()->getQuerySet()->filter($this->filter);
+        return $model->objects()->getQuerySet()->filter($this->getFilter());
+    }
+
+    public function getFilter()
+    {
+        if (is_null($this->filter)) {
+            if ($this->ownerModel && $this->ownerModel->pk) {
+                return [
+                    $this->ownerField => $this->ownerModel->pk
+                ];
+            } else {
+                return [];
+            }
+        }
+        return $this->filter;
     }
 
     public function getActions()
@@ -66,7 +89,7 @@ abstract class MultipleAdmin extends ModelAdmin
         }
         header('Content-Type: application/json');
         echo json_encode([
-            'refresh'=>true
+            'refresh' => true
         ]);
         Mindy::app()->end();
     }
@@ -115,7 +138,7 @@ abstract class MultipleAdmin extends ModelAdmin
     public function renderInput()
     {
         return $this->renderTemplate($this->template, [
-            'list_id' => $this->uniqueId(),
+            'listId' => $this->uniqueId(),
             'table' => $this->admin(),
             'adminClass' => $this->classNameShort(),
             'moduleName' => $this->getModel()->getModule()->getId(),
@@ -125,7 +148,7 @@ abstract class MultipleAdmin extends ModelAdmin
 
     public function uniqueId()
     {
-        return $this->ownerField;
+        return $this->multipleField;
     }
 
     public function admin()
@@ -142,6 +165,7 @@ abstract class MultipleAdmin extends ModelAdmin
             'admin' => $this,
             'urlParams' => $this->getUrlParams(),
             'actions' => $this->getActions(),
+            'listId' => $this->uniqueId()
         ], $context));
 
         return $table;
