@@ -1,5 +1,3 @@
-
-
 <section data-pseudo-form data-action="{% url 'admin:list' table.moduleName admin.classNameShort() %}" data-method="post" id="main-form">
     {% csrf_token %}
     {% include 'multiple/multiple/_toolbar.html' with ['urlParams'=>urlParams]%}

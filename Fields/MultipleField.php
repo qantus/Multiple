@@ -73,7 +73,6 @@ class MultipleField extends Field
             ]);
         }
 
-
         return $this->renderTemplate($this->template, [
             'list_id' => $this->uniqueId(),
             'table'=>$this->admin(),

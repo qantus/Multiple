@@ -21,17 +21,20 @@ abstract class MultipleAdmin extends ModelAdmin
 {
     use RenderTrait;
 
+    public $template = 'multiple/multiple/input.html';
+
     public $actionsTemplate = 'multiple/multiple/_actions.html';
     public $updateTemplate = 'multiple/multiple/form.html';
     public $createTemplate = 'multiple/multiple/form.html';
     public $indexTemplate = 'multiple/multiple/_list.html';
     public $successTemplate = 'multiple/multiple/_success.html';
 
-    public $adminTableClassName = 'Modules\Multiple\Admin\Tables\MultipleAdminTable';
+    public $adminTableClassName = 'Modules\Multiple\Tables\MultipleAdminTable';
 
     public $filter = [];
 
     public $ownerField;
+    public $ownerModel;
 
     public $showPkColumn = false;
 
@@ -107,5 +110,53 @@ abstract class MultipleAdmin extends ModelAdmin
                 $this->redirect($route, $params);
             }
         }
+    }
+
+    public function renderInput()
+    {
+        return $this->renderTemplate($this->template, [
+            'list_id' => $this->uniqueId(),
+            'table' => $this->admin(),
+            'adminClass' => $this->classNameShort(),
+            'moduleName' => $this->getModel()->getModule()->getId(),
+            'urlParams' => $this->getUrlParams(),
+        ]);
+    }
+
+    public function uniqueId()
+    {
+        return $this->ownerField;
+    }
+
+    public function admin()
+    {
+        $module = $this->getModule();
+        $moduleName = $module->getId();
+
+        $context = $this->index();
+        $table = $this->renderTemplate($this->indexTemplate, array_merge([
+            'module' => $module,
+            'moduleName' => $moduleName,
+            'modelClass' => $this->getModel()->classNameShort(),
+            'adminClass' => $this->classNameShort(),
+            'admin' => $this,
+            'urlParams' => $this->getUrlParams(),
+            'actions' => $this->getActions(),
+        ], $context));
+
+        return $table;
+    }
+
+    public function getUrlParams()
+    {
+        return http_build_query([$this->ownerField => $this->getPrimaryKeyValue()]);
+    }
+
+    public function getPrimaryKeyValue()
+    {
+        if ($this->ownerModel && $this->ownerModel->pk) {
+            return $this->ownerModel->pk;
+        }
+        return null;
     }
 }

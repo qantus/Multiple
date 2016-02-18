@@ -4,7 +4,6 @@
     </div>
 </section>
 
-
 {% include 'multiple/multiple/_style.html' %}
 
 {% block js %}
@@ -129,7 +128,7 @@
                                 action: 'sorting'
                             },
                             type: 'POST',
-                            url: '{% url 'admin:list' moduleName admin.classNameShort() %}',
+                            url: '{% url 'admin:list' moduleName adminClass %}',
                             success: function (data) {
                                 $('#main-form').replaceWith(data);
                             }
@@ -137,9 +136,6 @@
                     }
                 }).disableSelection();
             }
-
-
-
         });
     </script>
 

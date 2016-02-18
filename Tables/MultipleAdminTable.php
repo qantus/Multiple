@@ -11,7 +11,7 @@
  * @date 30/01/15 11:14
  */
 
-namespace Modules\Multiple\Admin\Tables;
+namespace Modules\Multiple\Tables;
 
 use Modules\Admin\Tables\AdminTable;
 
